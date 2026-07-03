@@ -1,4 +1,6 @@
-# Obairo Labs — Activity Console
+# Obairo Labs — Activity Console  
+
+🔗 **Live Site:** [chakrasgit.github.io/obairolabs](https://chakrasgit.github.io/obairolabs/)
 
 A self-hosted, no-backend dashboard + tracker for obairolabs content activity across YouTube, Instagram, Facebook, Threads, X, LinkedIn and Reddit. 
 
