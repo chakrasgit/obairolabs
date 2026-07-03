@@ -1,0 +1,130 @@
+[
+  {
+    "id": 1,
+    "title": "Grok 4.5 Private Beta Leaks: What SpaceX and Tesla Are Testing",
+    "category": "AI Labs",
+    "video_type": "short",
+    "date_posted": "2026-07-01",
+    "source_url": "https://x.ai/blog/grok-4-5",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example1" },
+      "instagram": { "status": "posted", "url": "https://instagram.com/p/example1" },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example1" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example1" },
+      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example1" },
+      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example1" }
+    }
+  },
+  {
+    "id": 2,
+    "title": "What Is a Transformer, Actually? (No Jargon Explainer)",
+    "category": "AI Concepts",
+    "video_type": "short",
+    "date_posted": "2026-06-28",
+    "source_url": "",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example2" },
+      "instagram": { "status": "posted", "url": "https://instagram.com/p/example2" },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example2" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example2" },
+      "twitter":   { "status": "scheduled", "url": null },
+      "reddit":    { "status": "not_planned", "url": null }
+    }
+  },
+  {
+    "id": 3,
+    "title": "Figure's New Humanoid Just Learned to Fold Laundry",
+    "category": "Humanoid Robots",
+    "video_type": "short",
+    "date_posted": "2026-06-25",
+    "source_url": "https://www.figure.ai/news",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example3" },
+      "instagram": { "status": "posted", "url": "https://instagram.com/p/example3" },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example3" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example3" },
+      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example3" },
+      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example3" }
+    }
+  },
+  {
+    "id": 4,
+    "title": "Inside Anthropic's Constitutional AI: A Deep Dive",
+    "category": "AI Ethics & Safety",
+    "video_type": "long",
+    "date_posted": "2026-06-20",
+    "source_url": "https://www.anthropic.com/news",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example4" },
+      "instagram": { "status": "not_planned", "url": null },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example4" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example4" },
+      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example4" },
+      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example4" }
+    }
+  },
+  {
+    "id": 5,
+    "title": "How Robotic Arms Actually 'See' What They're Picking Up",
+    "category": "Robotic Concepts",
+    "video_type": "short",
+    "date_posted": "2026-06-15",
+    "source_url": "",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example5" },
+      "instagram": { "status": "posted", "url": "https://instagram.com/p/example5" },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example5" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example5" },
+      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example5" },
+      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example5" }
+    }
+  },
+  {
+    "id": 6,
+    "title": "Boston Dynamics' Atlas Gets a Factory Job",
+    "category": "Robotics News",
+    "video_type": "short",
+    "date_posted": "2026-06-10",
+    "source_url": "https://bostondynamics.com/news",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example6" },
+      "instagram": { "status": "posted", "url": "https://instagram.com/p/example6" },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example6" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example6" },
+      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example6" },
+      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example6" }
+    }
+  },
+  {
+    "id": 7,
+    "title": "Why Every AI Lab Suddenly Cares About Robotics",
+    "category": "AI in Industry",
+    "video_type": "long",
+    "date_posted": "2026-06-05",
+    "source_url": "",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example7" },
+      "instagram": { "status": "not_planned", "url": null },
+      "facebook":  { "status": "posted", "url": "https://facebook.com/example7" },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example7" },
+      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example7" },
+      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example7" }
+    }
+  },
+  {
+    "id": 8,
+    "title": "OpenAI's Latest Model Card, Explained in Plain English",
+    "category": "AI News",
+    "video_type": "short",
+    "date_posted": "2026-07-02",
+    "source_url": "https://openai.com/news",
+    "platforms": {
+      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example8" },
+      "instagram": { "status": "scheduled", "url": null },
+      "facebook":  { "status": "scheduled", "url": null },
+      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example8" },
+      "twitter":   { "status": "scheduled", "url": null },
+      "reddit":    { "status": "not_planned", "url": null }
+    }
+  }
+]
