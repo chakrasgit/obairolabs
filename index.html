@@ -400,7 +400,86 @@
     border-radius: 3px;
   }
   .dropdown-item:hover{ background: var(--line-soft); color: var(--text); }
-  .dropdown-item input{ accent-color: var(--accent); }
+  .dropdown-item input[type="checkbox"]{
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--panel);
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .dropdown-item input[type="checkbox"]:checked{
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .dropdown-item input[type="checkbox"]:checked::after{
+    content:"";
+    position:absolute;
+    left: 4px; top: 1px;
+    width: 4px; height: 8px;
+    border: solid #06101f;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  /* ---------- Custom calendar dropdown ---------- */
+  .cal-menu{ min-width: 220px; padding: 10px; }
+  .cal-header{ display:flex; gap: 6px; margin-bottom: 8px; }
+  .cal-header select{
+    min-width: auto;
+    flex: 1;
+    padding: 5px 6px;
+    font-size: 11px;
+  }
+  .cal-dow-row{
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 2px;
+  }
+  .cal-dow-row span{
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--text-faint);
+    text-align:center;
+  }
+  .cal-grid{
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+  .cal-day{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-align:center;
+    padding: 6px 0;
+    border-radius: 3px;
+    cursor:pointer;
+    color: var(--text-dim);
+    border: 1px solid transparent;
+    user-select: none;
+  }
+  .cal-day:hover{ border-color: var(--accent); color: var(--accent-soft); }
+  .cal-day.selected{ background: var(--accent); color: #06101f; font-weight:600; }
+  .cal-day.disabled{ color: var(--line); cursor: default; pointer-events: none; }
+  .cal-day.today{ box-shadow: inset 0 0 0 1px var(--accent-dim); }
+  .cal-day.empty{ visibility: hidden; cursor: default; }
+  .cal-clear{
+    margin-top: 8px;
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--text-faint);
+    background: none;
+    border: 1px solid var(--line);
+    padding: 5px 0;
+    cursor:pointer;
+    border-radius: 3px;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .cal-clear:hover{ color: var(--red); border-color: var(--red); }
 
   .type-toggle{ display:flex; gap:4px; }
   .type-btn{
@@ -596,24 +675,38 @@
         </div>
         <div class="filter-group">
           <div class="filter-label">Platform</div>
-          <select id="platformFilter">
-            <option value="all">All platforms</option>
-            <option value="youtube">YouTube</option>
-            <option value="instagram">Instagram</option>
-            <option value="facebook">Facebook</option>
-            <option value="threads">Threads</option>
-            <option value="x">X</option>
-            <option value="reddit">Reddit</option>
-            <option value="linkedin">LinkedIn</option>
-          </select>
+          <button class="dropdown-toggle" id="platformDropdownBtn" type="button">All platforms</button>
+          <div class="dropdown-menu" id="platformMenu"></div>
         </div>
         <div class="filter-group">
           <div class="filter-label">From</div>
-          <input type="date" id="dateFrom" min="2026-06-01" max="2032-12-31">
+          <button class="dropdown-toggle" id="dateFromBtn" type="button">Any</button>
+          <div class="dropdown-menu cal-menu" id="dateFromMenu">
+            <div class="cal-header">
+              <select class="cal-month-select" id="dateFromMonth"></select>
+              <select class="cal-year-select" id="dateFromYear"></select>
+            </div>
+            <div class="cal-dow-row">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="cal-grid" id="dateFromGrid"></div>
+            <button class="cal-clear" data-target="dateFrom" type="button">Clear</button>
+          </div>
         </div>
         <div class="filter-group">
           <div class="filter-label">To</div>
-          <input type="date" id="dateTo" min="2026-06-01" max="2032-12-31">
+          <button class="dropdown-toggle" id="dateToBtn" type="button">Any</button>
+          <div class="dropdown-menu cal-menu" id="dateToMenu">
+            <div class="cal-header">
+              <select class="cal-month-select" id="dateToMonth"></select>
+              <select class="cal-year-select" id="dateToYear"></select>
+            </div>
+            <div class="cal-dow-row">
+              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+            </div>
+            <div class="cal-grid" id="dateToGrid"></div>
+            <button class="cal-clear" data-target="dateTo" type="button">Clear</button>
+          </div>
         </div>
       </div>
     </div>
@@ -683,16 +776,25 @@ let CATEGORIES = [];
 let filters = {
   categories: new Set(),   // empty set = all categories
   type: "all",
-  platform: "all",
+  platforms: new Set(),    // empty set = all platforms
   dateFrom: null,
   dateTo: null,
   year: new Date().getFullYear() >= 2026 && new Date().getFullYear() <= 2032 ? new Date().getFullYear() : 2026
 };
+const CAL_MIN = "2026-06-01";
+const CAL_MAX = "2032-12-31";
+let calView = { dateFrom: null, dateTo: null }; // { year, month(0-11) } currently shown per calendar
 
 function renderSocialBar(){
   document.getElementById('socialBar').innerHTML = SOCIAL_LINKS.map(s => `
     <a class="social-link${s.placeholder ? ' placeholder' : ''}" href="${s.url}" data-tip="${s.label}" target="_blank" rel="noopener">${s.icon}</a>
   `).join('');
+}
+
+function formatDateLabel(dateStr){
+  if(!dateStr) return "Any";
+  const [y, m, d] = dateStr.split('-').map(Number);
+  return MONTHS[m-1] + ' ' + d + ', ' + y;
 }
 
 async function loadData(){
@@ -709,31 +811,91 @@ async function loadData(){
     return;
   }
   document.getElementById('lastUpdated').textContent = 'RECORDS: ' + ACTIVITY.length;
+  const now = new Date();
+  calView.dateFrom = { year: now.getFullYear(), month: now.getMonth() };
+  calView.dateTo = { year: now.getFullYear(), month: now.getMonth() };
   if(ACTIVITY.length){
     const earliest = ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted);
+    const latest = ACTIVITY.reduce((max, d) => d.date_posted > max ? d.date_posted : max, ACTIVITY[0].date_posted);
     document.getElementById('trackingSince').textContent = earliest;
+    // Default the date range filters to the actual span of the data, oldest to latest.
+    filters.dateFrom = earliest;
+    filters.dateTo = latest;
+    const [ey, em] = earliest.split('-').map(Number);
+    const [ly, lm] = latest.split('-').map(Number);
+    calView.dateFrom = { year: ey, month: em - 1 };
+    calView.dateTo = { year: ly, month: lm - 1 };
   }
   renderSocialBar();
   initFilters();
   renderAll();
 }
 
+function buildCalendarShell(prefix){
+  const monthSelect = document.getElementById(prefix + 'Month');
+  const yearSelect = document.getElementById(prefix + 'Year');
+  monthSelect.innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+  yearSelect.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
+  monthSelect.addEventListener('change', () => {
+    calView[prefix].month = parseInt(monthSelect.value);
+    renderCalendarGrid(prefix);
+  });
+  yearSelect.addEventListener('change', () => {
+    calView[prefix].year = parseInt(yearSelect.value);
+    renderCalendarGrid(prefix);
+  });
+}
+
+function renderCalendarGrid(prefix){
+  const view = calView[prefix];
+  document.getElementById(prefix + 'Month').value = view.month;
+  document.getElementById(prefix + 'Year').value = view.year;
+
+  const firstOfMonth = new Date(view.year, view.month, 1);
+  const startOffset = firstOfMonth.getDay(); // 0=Sun
+  const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
+  const todayStr = new Date().toISOString().slice(0,10);
+  const selectedStr = filters[prefix];
+
+  let cells = '';
+  for(let i = 0; i < startOffset; i++){ cells += '<div class="cal-day empty"></div>'; }
+  for(let d = 1; d <= daysInMonth; d++){
+    const dateStr = view.year + '-' + String(view.month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    const disabled = dateStr < CAL_MIN || dateStr > CAL_MAX;
+    const classes = ['cal-day'];
+    if(disabled) classes.push('disabled');
+    if(dateStr === selectedStr) classes.push('selected');
+    if(dateStr === todayStr) classes.push('today');
+    cells += `<div class="${classes.join(' ')}" data-date="${dateStr}">${d}</div>`;
+  }
+  document.getElementById(prefix + 'Grid').innerHTML = cells;
+  document.getElementById(prefix + 'Grid').querySelectorAll('.cal-day:not(.disabled):not(.empty)').forEach(cell => {
+    cell.addEventListener('click', () => {
+      filters[prefix] = cell.dataset.date;
+      document.getElementById(prefix + 'Btn').textContent = formatDateLabel(cell.dataset.date);
+      document.getElementById(prefix + 'Menu').classList.remove('open');
+      renderCalendarGrid(prefix);
+      renderTable(); renderStats();
+    });
+  });
+}
+
 function initFilters(){
-  // year select
+  // year select (chart)
   const yearSelect = document.getElementById('yearSelect');
   yearSelect.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
   yearSelect.value = filters.year;
   yearSelect.addEventListener('change', () => { filters.year = parseInt(yearSelect.value); renderChart(); });
 
   // category dropdown (multi-select)
-  const menu = document.getElementById('categoryMenu');
-  const btn = document.getElementById('categoryDropdownBtn');
-  menu.innerHTML = CATEGORIES.map(c => `
+  const catMenu = document.getElementById('categoryMenu');
+  const catBtn = document.getElementById('categoryDropdownBtn');
+  catMenu.innerHTML = CATEGORIES.map(c => `
     <label class="dropdown-item">
       <input type="checkbox" value="${c}"> ${c}
     </label>
   `).join('');
-  menu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+  catMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
     cb.addEventListener('change', () => {
       if(cb.checked) filters.categories.add(cb.value);
       else filters.categories.delete(cb.value);
@@ -741,12 +903,35 @@ function initFilters(){
       renderTable(); renderStats();
     });
   });
-  btn.addEventListener('click', (e) => {
+  catBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    menu.classList.toggle('open');
+    closeAllMenus(catMenu);
+    catMenu.classList.toggle('open');
   });
-  document.addEventListener('click', () => menu.classList.remove('open'));
-  menu.addEventListener('click', e => e.stopPropagation());
+  catMenu.addEventListener('click', e => e.stopPropagation());
+
+  // platform dropdown (multi-select)
+  const platMenu = document.getElementById('platformMenu');
+  const platBtn = document.getElementById('platformDropdownBtn');
+  platMenu.innerHTML = PLATFORMS.map(p => `
+    <label class="dropdown-item">
+      <input type="checkbox" value="${p.key}"> ${p.label}
+    </label>
+  `).join('');
+  platMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if(cb.checked) filters.platforms.add(cb.value);
+      else filters.platforms.delete(cb.value);
+      updatePlatformLabel();
+      renderTable();
+    });
+  });
+  platBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus(platMenu);
+    platMenu.classList.toggle('open');
+  });
+  platMenu.addEventListener('click', e => e.stopPropagation());
 
   // type toggle
   document.querySelectorAll('.type-btn').forEach(b => {
@@ -758,38 +943,73 @@ function initFilters(){
     });
   });
 
-  // platform filter
-  document.getElementById('platformFilter').addEventListener('change', e => {
-    filters.platform = e.target.value;
-    renderTable();
+  // date range calendars
+  buildCalendarShell('dateFrom');
+  buildCalendarShell('dateTo');
+  renderCalendarGrid('dateFrom');
+  renderCalendarGrid('dateTo');
+  document.getElementById('dateFromBtn').textContent = formatDateLabel(filters.dateFrom);
+  document.getElementById('dateToBtn').textContent = formatDateLabel(filters.dateTo);
+  const dateFromMenu = document.getElementById('dateFromMenu');
+  const dateToMenu = document.getElementById('dateToMenu');
+  document.getElementById('dateFromBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    closeAllMenus(dateFromMenu);
+    dateFromMenu.classList.toggle('open');
   });
-
-  // date range
-  document.getElementById('dateFrom').addEventListener('change', e => { filters.dateFrom = e.target.value || null; renderTable(); renderStats(); });
-  document.getElementById('dateTo').addEventListener('change', e => { filters.dateTo = e.target.value || null; renderTable(); renderStats(); });
-  [document.getElementById('dateFrom'), document.getElementById('dateTo')].forEach(input => {
-    input.addEventListener('click', () => {
-      if(typeof input.showPicker === 'function'){
-        try{ input.showPicker(); }catch(e){}
-      }
+  document.getElementById('dateToBtn').addEventListener('click', e => {
+    e.stopPropagation();
+    closeAllMenus(dateToMenu);
+    dateToMenu.classList.toggle('open');
+  });
+  dateFromMenu.addEventListener('click', e => e.stopPropagation());
+  dateToMenu.addEventListener('click', e => e.stopPropagation());
+  document.querySelectorAll('.cal-clear').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const prefix = btn.dataset.target;
+      filters[prefix] = null;
+      document.getElementById(prefix + 'Btn').textContent = "Any";
+      document.getElementById(prefix + 'Menu').classList.remove('open');
+      renderCalendarGrid(prefix);
+      renderTable(); renderStats();
     });
   });
+
+  // close any open dropdown when clicking elsewhere
+  document.addEventListener('click', () => closeAllMenus(null));
 
   // reset
   document.getElementById('resetFilters').addEventListener('click', () => {
     filters.categories.clear();
     filters.type = "all";
-    filters.platform = "all";
-    filters.dateFrom = null;
-    filters.dateTo = null;
-    menu.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    filters.platforms.clear();
+    if(ACTIVITY.length){
+      const earliest = ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted);
+      const latest = ACTIVITY.reduce((max, d) => d.date_posted > max ? d.date_posted : max, ACTIVITY[0].date_posted);
+      filters.dateFrom = earliest;
+      filters.dateTo = latest;
+      const [ey, em] = earliest.split('-').map(Number);
+      const [ly, lm] = latest.split('-').map(Number);
+      calView.dateFrom = { year: ey, month: em - 1 };
+      calView.dateTo = { year: ly, month: lm - 1 };
+    }
+    catMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    platMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     updateCategoryLabel();
+    updatePlatformLabel();
     document.querySelectorAll('.type-btn').forEach(b2 => b2.classList.remove('active'));
     document.querySelector('.type-btn[data-type="all"]').classList.add('active');
-    document.getElementById('platformFilter').value = "all";
-    document.getElementById('dateFrom').value = "";
-    document.getElementById('dateTo').value = "";
+    document.getElementById('dateFromBtn').textContent = formatDateLabel(filters.dateFrom);
+    document.getElementById('dateToBtn').textContent = formatDateLabel(filters.dateTo);
+    renderCalendarGrid('dateFrom');
+    renderCalendarGrid('dateTo');
     renderTable(); renderStats();
+  });
+}
+
+function closeAllMenus(except){
+  document.querySelectorAll('.dropdown-menu.open').forEach(m => {
+    if(m !== except) m.classList.remove('open');
   });
 }
 
@@ -799,12 +1019,19 @@ function updateCategoryLabel(){
   btn.textContent = n === 0 ? "All categories" : n + " selected";
 }
 
+function updatePlatformLabel(){
+  const btn = document.getElementById('platformDropdownBtn');
+  const n = filters.platforms.size;
+  btn.textContent = n === 0 ? "All platforms" : n + " selected";
+}
+
 function getFiltered(){
   return ACTIVITY.filter(item => {
     if(filters.categories.size > 0 && !filters.categories.has(item.category)) return false;
     if(filters.type !== "all" && item.video_type !== filters.type) return false;
-    if(filters.platform !== "all"){
-      if(!item.platforms[filters.platform]) return false;
+    if(filters.platforms.size > 0){
+      const matchesAny = [...filters.platforms].some(key => !!item.platforms[key]);
+      if(!matchesAny) return false;
     }
     if(filters.dateFrom && item.date_posted < filters.dateFrom) return false;
     if(filters.dateTo && item.date_posted > filters.dateTo) return false;
