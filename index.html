@@ -425,49 +425,71 @@
     transform: rotate(45deg);
   }
 
-  /* ---------- Date Y/M/D grid picker ---------- */
-  .date-dropdown-menu{
-    min-width: 236px;
-    max-height: none;
-    overflow: visible;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  /* ---------- Date Y/M/D individual mini-dropdowns ---------- */
+  .date-picker-row{
+    display:flex;
+    align-items:center;
+    gap: 4px;
   }
-  .date-grid-section{ display:flex; flex-direction:column; gap:7px; }
-  .date-grid-label{
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
+  .date-picker-row .sep{
     color: var(--text-faint);
-  }
-  .date-grid{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-  }
-  .date-cell-btn{
     font-family: var(--font-mono);
-    font-size: 11.5px;
+    font-size: 11px;
+  }
+  .mini-dropdown{ position: relative; }
+  .mini-dropdown-toggle{
+    background: var(--panel-raised);
+    border: 1px solid var(--line);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 3px;
+    min-width: 50px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .mini-dropdown-toggle:hover, .mini-dropdown-toggle:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
+    outline: none;
+  }
+  .mini-dropdown-menu{
+    display:none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 30;
+    background: var(--panel-raised);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 5px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+    width: max-content;
+  }
+  .mini-dropdown-menu.open{ display:grid; }
+  .mini-cell-btn{
+    font-family: var(--font-mono);
+    font-size: 10.5px;
     color: var(--text-dim);
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 3px;
-    padding: 6px 4px;
+    padding: 4px 3px;
+    min-width: 28px;
     text-align: center;
     cursor: pointer;
     transition: border-color .12s ease, background .12s ease, color .12s ease;
   }
-  .date-cell-btn:hover{ border-color: var(--accent); color: var(--text); }
-  .date-cell-btn.selected{
+  .mini-cell-btn:hover{ border-color: var(--accent); color: var(--text); }
+  .mini-cell-btn.selected{
     background: var(--accent);
     border-color: var(--accent);
     color: #06101f;
     font-weight: 600;
   }
-  .date-dropdown-toggle{ min-width: 190px; }
 
   .type-toggle{ display:flex; gap:4px; }
   .type-btn{
@@ -668,37 +690,39 @@
         </div>
         <div class="filter-group">
           <div class="filter-label">From</div>
-          <button class="dropdown-toggle date-dropdown-toggle" id="dateFromBtn" type="button"></button>
-          <div class="dropdown-menu date-dropdown-menu" id="dateFromMenu">
-            <div class="date-grid-section">
-              <div class="date-grid-label">Year</div>
-              <div class="date-grid" id="dateFromYearGrid"></div>
+          <div class="date-picker-row">
+            <div class="mini-dropdown">
+              <button class="mini-dropdown-toggle" id="dateFromYearBtn" type="button"></button>
+              <div class="mini-dropdown-menu" id="dateFromYearMenu"></div>
             </div>
-            <div class="date-grid-section">
-              <div class="date-grid-label">Month</div>
-              <div class="date-grid" id="dateFromMonthGrid"></div>
+            <span class="sep">/</span>
+            <div class="mini-dropdown">
+              <button class="mini-dropdown-toggle" id="dateFromMonthBtn" type="button"></button>
+              <div class="mini-dropdown-menu" id="dateFromMonthMenu"></div>
             </div>
-            <div class="date-grid-section">
-              <div class="date-grid-label">Day</div>
-              <div class="date-grid" id="dateFromDayGrid"></div>
+            <span class="sep">/</span>
+            <div class="mini-dropdown">
+              <button class="mini-dropdown-toggle" id="dateFromDayBtn" type="button"></button>
+              <div class="mini-dropdown-menu" id="dateFromDayMenu"></div>
             </div>
           </div>
         </div>
         <div class="filter-group">
           <div class="filter-label">To</div>
-          <button class="dropdown-toggle date-dropdown-toggle" id="dateToBtn" type="button"></button>
-          <div class="dropdown-menu date-dropdown-menu" id="dateToMenu">
-            <div class="date-grid-section">
-              <div class="date-grid-label">Year</div>
-              <div class="date-grid" id="dateToYearGrid"></div>
+          <div class="date-picker-row">
+            <div class="mini-dropdown">
+              <button class="mini-dropdown-toggle" id="dateToYearBtn" type="button"></button>
+              <div class="mini-dropdown-menu" id="dateToYearMenu"></div>
             </div>
-            <div class="date-grid-section">
-              <div class="date-grid-label">Month</div>
-              <div class="date-grid" id="dateToMonthGrid"></div>
+            <span class="sep">/</span>
+            <div class="mini-dropdown">
+              <button class="mini-dropdown-toggle" id="dateToMonthBtn" type="button"></button>
+              <div class="mini-dropdown-menu" id="dateToMonthMenu"></div>
             </div>
-            <div class="date-grid-section">
-              <div class="date-grid-label">Day</div>
-              <div class="date-grid" id="dateToDayGrid"></div>
+            <span class="sep">/</span>
+            <div class="mini-dropdown">
+              <button class="mini-dropdown-toggle" id="dateToDayBtn" type="button"></button>
+              <div class="mini-dropdown-menu" id="dateToDayMenu"></div>
             </div>
           </div>
         </div>
@@ -813,42 +837,42 @@ async function loadData(){
   renderAll();
 }
 
-// Builds a Year / Month / Day grid picker for the given filter key ("dateFrom" or "dateTo").
-// Renders each as a matrix of themed cell-buttons (3 per row) instead of native <select> elements,
-// so the popup and its options are fully styled to match the console theme.
+// Builds three independent Year / Month / Day mini-dropdowns for the given filter key
+// ("dateFrom" or "dateTo"). Each is its own small floating popup (matching the console
+// theme) rather than a native <select>, and they stay visually separated by "/" like before.
 function buildDateSelectGroup(prefix){
-  const btn = document.getElementById(prefix + 'Btn');
-  const menu = document.getElementById(prefix + 'Menu');
-  const yearGrid = document.getElementById(prefix + 'YearGrid');
-  const monthGrid = document.getElementById(prefix + 'MonthGrid');
-  const dayGrid = document.getElementById(prefix + 'DayGrid');
-
   let state = { y: YEARS[0], m: 0, d: 1 };
 
   function daysInMonth(y, m){ return new Date(y, m + 1, 0).getDate(); }
 
-  function renderYearGrid(){
-    yearGrid.innerHTML = YEARS.map(y => `
-      <button type="button" class="date-cell-btn${y === state.y ? ' selected' : ''}" data-y="${y}">${y}</button>
+  const yearBtn = document.getElementById(prefix + 'YearBtn');
+  const yearMenu = document.getElementById(prefix + 'YearMenu');
+  const monthBtn = document.getElementById(prefix + 'MonthBtn');
+  const monthMenu = document.getElementById(prefix + 'MonthMenu');
+  const dayBtn = document.getElementById(prefix + 'DayBtn');
+  const dayMenu = document.getElementById(prefix + 'DayMenu');
+
+  function renderYearMenu(){
+    yearMenu.innerHTML = YEARS.map(y => `
+      <button type="button" class="mini-cell-btn${y === state.y ? ' selected' : ''}" data-y="${y}">${y}</button>
     `).join('');
   }
-
-  function renderMonthGrid(){
-    monthGrid.innerHTML = MONTHS.map((m, i) => `
-      <button type="button" class="date-cell-btn${i === state.m ? ' selected' : ''}" data-m="${i}">${m}</button>
+  function renderMonthMenu(){
+    monthMenu.innerHTML = MONTHS.map((m, i) => `
+      <button type="button" class="mini-cell-btn${i === state.m ? ' selected' : ''}" data-m="${i}">${m}</button>
     `).join('');
   }
-
-  function renderDayGrid(){
+  function renderDayMenu(){
     const total = daysInMonth(state.y, state.m);
     if(state.d > total) state.d = total;
-    dayGrid.innerHTML = Array.from({length: total}, (_, i) => i + 1).map(d => `
-      <button type="button" class="date-cell-btn${d === state.d ? ' selected' : ''}" data-d="${d}">${String(d).padStart(2,'0')}</button>
+    dayMenu.innerHTML = Array.from({length: total}, (_, i) => i + 1).map(d => `
+      <button type="button" class="mini-cell-btn${d === state.d ? ' selected' : ''}" data-d="${d}">${String(d).padStart(2,'0')}</button>
     `).join('');
   }
-
-  function renderLabel(){
-    btn.textContent = MONTHS[state.m] + ' ' + String(state.d).padStart(2,'0') + ', ' + state.y;
+  function renderLabels(){
+    yearBtn.textContent = state.y;
+    monthBtn.textContent = MONTHS[state.m];
+    dayBtn.textContent = String(state.d).padStart(2, '0');
   }
 
   function commit(){
@@ -856,41 +880,42 @@ function buildDateSelectGroup(prefix){
     const m = String(state.m + 1).padStart(2, '0');
     const d = String(state.d).padStart(2, '0');
     filters[prefix] = `${y}-${m}-${d}`;
-    renderLabel();
     renderTable(); renderStats();
   }
 
-  yearGrid.addEventListener('click', (e) => {
-    const cell = e.target.closest('.date-cell-btn');
+  yearMenu.addEventListener('click', (e) => {
+    const cell = e.target.closest('.mini-cell-btn');
     if(!cell) return;
     state.y = parseInt(cell.dataset.y);
-    renderYearGrid(); renderDayGrid(); commit();
+    renderYearMenu(); renderDayMenu(); renderLabels(); commit();
   });
-  monthGrid.addEventListener('click', (e) => {
-    const cell = e.target.closest('.date-cell-btn');
+  monthMenu.addEventListener('click', (e) => {
+    const cell = e.target.closest('.mini-cell-btn');
     if(!cell) return;
     state.m = parseInt(cell.dataset.m);
-    renderMonthGrid(); renderDayGrid(); commit();
+    renderMonthMenu(); renderDayMenu(); renderLabels(); commit();
   });
-  dayGrid.addEventListener('click', (e) => {
-    const cell = e.target.closest('.date-cell-btn');
+  dayMenu.addEventListener('click', (e) => {
+    const cell = e.target.closest('.mini-cell-btn');
     if(!cell) return;
     state.d = parseInt(cell.dataset.d);
-    renderDayGrid(); commit();
+    renderDayMenu(); renderLabels(); commit();
   });
 
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    closeAllMenus(menu);
-    menu.classList.toggle('open');
+  [[yearBtn, yearMenu], [monthBtn, monthMenu], [dayBtn, dayMenu]].forEach(([btn, menu]) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeAllMenus(menu);
+      menu.classList.toggle('open');
+    });
+    menu.addEventListener('click', (e) => e.stopPropagation());
   });
-  menu.addEventListener('click', (e) => e.stopPropagation());
 
   return {
     setDate(dateStr){
       const [y, m, d] = dateStr.split('-').map(Number);
       state = { y, m: m - 1, d };
-      renderYearGrid(); renderMonthGrid(); renderDayGrid(); renderLabel();
+      renderYearMenu(); renderMonthMenu(); renderDayMenu(); renderLabels();
       filters[prefix] = dateStr;
     }
   };
@@ -991,7 +1016,7 @@ function initFilters(){
 }
 
 function closeAllMenus(except){
-  document.querySelectorAll('.dropdown-menu.open').forEach(m => {
+  document.querySelectorAll('.dropdown-menu.open, .mini-dropdown-menu.open').forEach(m => {
     if(m !== except) m.classList.remove('open');
   });
 }
