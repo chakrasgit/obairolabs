@@ -425,39 +425,49 @@
     transform: rotate(45deg);
   }
 
-  /* ---------- Date Y/M/D select trio ---------- */
-  .date-select-box{
-    display:flex;
-    align-items:center;
+  /* ---------- Date Y/M/D grid picker ---------- */
+  .date-dropdown-menu{
+    min-width: 236px;
+    max-height: none;
+    overflow: visible;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .date-grid-section{ display:flex; flex-direction:column; gap:7px; }
+  .date-grid-label{
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .date-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+  .date-cell-btn{
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-dim);
+    background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 3px;
-    background: var(--panel-raised);
-    transition: border-color .15s ease, box-shadow .15s ease;
-  }
-  .date-select-box:hover, .date-select-box:focus-within{
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
-  }
-  .date-select-box select{
-    border: none;
-    background: transparent;
-    min-width: auto;
-    padding: 7px 5px;
-    font-size: 11.5px;
-    color: var(--text);
-    font-family: var(--font-mono);
+    padding: 6px 4px;
+    text-align: center;
     cursor: pointer;
+    transition: border-color .12s ease, background .12s ease, color .12s ease;
   }
-  .date-select-box select:hover, .date-select-box select:focus{
-    border: none;
-    box-shadow: none;
-    outline: none;
+  .date-cell-btn:hover{ border-color: var(--accent); color: var(--text); }
+  .date-cell-btn.selected{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #06101f;
+    font-weight: 600;
   }
-  .date-select-box .sep{
-    color: var(--text-faint);
-    font-family: var(--font-mono);
-    font-size: 11px;
-  }
+  .date-dropdown-toggle{ min-width: 190px; }
 
   .type-toggle{ display:flex; gap:4px; }
   .type-btn{
@@ -658,22 +668,38 @@
         </div>
         <div class="filter-group">
           <div class="filter-label">From</div>
-          <div class="date-select-box">
-            <select id="dateFromYear"></select>
-            <span class="sep">/</span>
-            <select id="dateFromMonth"></select>
-            <span class="sep">/</span>
-            <select id="dateFromDay"></select>
+          <button class="dropdown-toggle date-dropdown-toggle" id="dateFromBtn" type="button"></button>
+          <div class="dropdown-menu date-dropdown-menu" id="dateFromMenu">
+            <div class="date-grid-section">
+              <div class="date-grid-label">Year</div>
+              <div class="date-grid" id="dateFromYearGrid"></div>
+            </div>
+            <div class="date-grid-section">
+              <div class="date-grid-label">Month</div>
+              <div class="date-grid" id="dateFromMonthGrid"></div>
+            </div>
+            <div class="date-grid-section">
+              <div class="date-grid-label">Day</div>
+              <div class="date-grid" id="dateFromDayGrid"></div>
+            </div>
           </div>
         </div>
         <div class="filter-group">
           <div class="filter-label">To</div>
-          <div class="date-select-box">
-            <select id="dateToYear"></select>
-            <span class="sep">/</span>
-            <select id="dateToMonth"></select>
-            <span class="sep">/</span>
-            <select id="dateToDay"></select>
+          <button class="dropdown-toggle date-dropdown-toggle" id="dateToBtn" type="button"></button>
+          <div class="dropdown-menu date-dropdown-menu" id="dateToMenu">
+            <div class="date-grid-section">
+              <div class="date-grid-label">Year</div>
+              <div class="date-grid" id="dateToYearGrid"></div>
+            </div>
+            <div class="date-grid-section">
+              <div class="date-grid-label">Month</div>
+              <div class="date-grid" id="dateToMonthGrid"></div>
+            </div>
+            <div class="date-grid-section">
+              <div class="date-grid-label">Day</div>
+              <div class="date-grid" id="dateToDayGrid"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -787,44 +813,84 @@ async function loadData(){
   renderAll();
 }
 
-// Builds a Year / Month / Day dropdown trio for the given filter key ("dateFrom" or "dateTo").
-// Keeps the day options in sync with however many days the selected month actually has.
+// Builds a Year / Month / Day grid picker for the given filter key ("dateFrom" or "dateTo").
+// Renders each as a matrix of themed cell-buttons (3 per row) instead of native <select> elements,
+// so the popup and its options are fully styled to match the console theme.
 function buildDateSelectGroup(prefix){
-  const yearSel = document.getElementById(prefix + 'Year');
-  const monthSel = document.getElementById(prefix + 'Month');
-  const daySel = document.getElementById(prefix + 'Day');
+  const btn = document.getElementById(prefix + 'Btn');
+  const menu = document.getElementById(prefix + 'Menu');
+  const yearGrid = document.getElementById(prefix + 'YearGrid');
+  const monthGrid = document.getElementById(prefix + 'MonthGrid');
+  const dayGrid = document.getElementById(prefix + 'DayGrid');
 
-  yearSel.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
-  monthSel.innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
+  let state = { y: YEARS[0], m: 0, d: 1 };
 
-  function refreshDayOptions(keepDay){
-    const y = parseInt(yearSel.value);
-    const m = parseInt(monthSel.value);
-    const daysInMonth = new Date(y, m + 1, 0).getDate();
-    const wanted = Math.min(keepDay || 1, daysInMonth);
-    daySel.innerHTML = Array.from({length: daysInMonth}, (_, i) => i + 1)
-      .map(d => `<option value="${d}">${String(d).padStart(2,'0')}</option>`).join('');
-    daySel.value = wanted;
+  function daysInMonth(y, m){ return new Date(y, m + 1, 0).getDate(); }
+
+  function renderYearGrid(){
+    yearGrid.innerHTML = YEARS.map(y => `
+      <button type="button" class="date-cell-btn${y === state.y ? ' selected' : ''}" data-y="${y}">${y}</button>
+    `).join('');
+  }
+
+  function renderMonthGrid(){
+    monthGrid.innerHTML = MONTHS.map((m, i) => `
+      <button type="button" class="date-cell-btn${i === state.m ? ' selected' : ''}" data-m="${i}">${m}</button>
+    `).join('');
+  }
+
+  function renderDayGrid(){
+    const total = daysInMonth(state.y, state.m);
+    if(state.d > total) state.d = total;
+    dayGrid.innerHTML = Array.from({length: total}, (_, i) => i + 1).map(d => `
+      <button type="button" class="date-cell-btn${d === state.d ? ' selected' : ''}" data-d="${d}">${String(d).padStart(2,'0')}</button>
+    `).join('');
+  }
+
+  function renderLabel(){
+    btn.textContent = MONTHS[state.m] + ' ' + String(state.d).padStart(2,'0') + ', ' + state.y;
   }
 
   function commit(){
-    const y = yearSel.value;
-    const m = String(parseInt(monthSel.value) + 1).padStart(2, '0');
-    const d = String(daySel.value).padStart(2, '0');
+    const y = state.y;
+    const m = String(state.m + 1).padStart(2, '0');
+    const d = String(state.d).padStart(2, '0');
     filters[prefix] = `${y}-${m}-${d}`;
+    renderLabel();
     renderTable(); renderStats();
   }
 
-  yearSel.addEventListener('change', () => { refreshDayOptions(parseInt(daySel.value)); commit(); });
-  monthSel.addEventListener('change', () => { refreshDayOptions(parseInt(daySel.value)); commit(); });
-  daySel.addEventListener('change', commit);
+  yearGrid.addEventListener('click', (e) => {
+    const cell = e.target.closest('.date-cell-btn');
+    if(!cell) return;
+    state.y = parseInt(cell.dataset.y);
+    renderYearGrid(); renderDayGrid(); commit();
+  });
+  monthGrid.addEventListener('click', (e) => {
+    const cell = e.target.closest('.date-cell-btn');
+    if(!cell) return;
+    state.m = parseInt(cell.dataset.m);
+    renderMonthGrid(); renderDayGrid(); commit();
+  });
+  dayGrid.addEventListener('click', (e) => {
+    const cell = e.target.closest('.date-cell-btn');
+    if(!cell) return;
+    state.d = parseInt(cell.dataset.d);
+    renderDayGrid(); commit();
+  });
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus(menu);
+    menu.classList.toggle('open');
+  });
+  menu.addEventListener('click', (e) => e.stopPropagation());
 
   return {
     setDate(dateStr){
       const [y, m, d] = dateStr.split('-').map(Number);
-      yearSel.value = y;
-      monthSel.value = m - 1;
-      refreshDayOptions(d);
+      state = { y, m: m - 1, d };
+      renderYearGrid(); renderMonthGrid(); renderDayGrid(); renderLabel();
       filters[prefix] = dateStr;
     }
   };
