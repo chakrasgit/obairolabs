@@ -425,61 +425,39 @@
     transform: rotate(45deg);
   }
 
-  /* ---------- Custom calendar dropdown ---------- */
-  .cal-menu{ min-width: 220px; padding: 10px; }
-  .cal-header{ display:flex; gap: 6px; margin-bottom: 8px; }
-  .cal-header select{
-    min-width: auto;
-    flex: 1;
-    padding: 5px 6px;
-    font-size: 11px;
-  }
-  .cal-dow-row{
-    display:grid;
-    grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 2px;
-  }
-  .cal-dow-row span{
-    font-family: var(--font-mono);
-    font-size: 9px;
-    color: var(--text-faint);
-    text-align:center;
-  }
-  .cal-grid{
-    display:grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 2px;
-  }
-  .cal-day{
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-align:center;
-    padding: 6px 0;
-    border-radius: 3px;
-    cursor:pointer;
-    color: var(--text-dim);
-    border: 1px solid transparent;
-    user-select: none;
-  }
-  .cal-day:hover{ border-color: var(--accent); color: var(--accent-soft); }
-  .cal-day.selected{ background: var(--accent); color: #06101f; font-weight:600; }
-  .cal-day.disabled{ color: var(--line); cursor: default; pointer-events: none; }
-  .cal-day.today{ box-shadow: inset 0 0 0 1px var(--accent-dim); }
-  .cal-day.empty{ visibility: hidden; cursor: default; }
-  .cal-clear{
-    margin-top: 8px;
-    width: 100%;
-    font-family: var(--font-mono);
-    font-size: 10.5px;
-    color: var(--text-faint);
-    background: none;
+  /* ---------- Date Y/M/D select trio ---------- */
+  .date-select-box{
+    display:flex;
+    align-items:center;
     border: 1px solid var(--line);
-    padding: 5px 0;
-    cursor:pointer;
     border-radius: 3px;
-    transition: color .15s ease, border-color .15s ease;
+    background: var(--panel-raised);
+    transition: border-color .15s ease, box-shadow .15s ease;
   }
-  .cal-clear:hover{ color: var(--red); border-color: var(--red); }
+  .date-select-box:hover, .date-select-box:focus-within{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
+  }
+  .date-select-box select{
+    border: none;
+    background: transparent;
+    min-width: auto;
+    padding: 7px 5px;
+    font-size: 11.5px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    cursor: pointer;
+  }
+  .date-select-box select:hover, .date-select-box select:focus{
+    border: none;
+    box-shadow: none;
+    outline: none;
+  }
+  .date-select-box .sep{
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
 
   .type-toggle{ display:flex; gap:4px; }
   .type-btn{
@@ -680,32 +658,22 @@
         </div>
         <div class="filter-group">
           <div class="filter-label">From</div>
-          <button class="dropdown-toggle" id="dateFromBtn" type="button">Any</button>
-          <div class="dropdown-menu cal-menu" id="dateFromMenu">
-            <div class="cal-header">
-              <select class="cal-month-select" id="dateFromMonth"></select>
-              <select class="cal-year-select" id="dateFromYear"></select>
-            </div>
-            <div class="cal-dow-row">
-              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-            </div>
-            <div class="cal-grid" id="dateFromGrid"></div>
-            <button class="cal-clear" data-target="dateFrom" type="button">Clear</button>
+          <div class="date-select-box">
+            <select id="dateFromYear"></select>
+            <span class="sep">/</span>
+            <select id="dateFromMonth"></select>
+            <span class="sep">/</span>
+            <select id="dateFromDay"></select>
           </div>
         </div>
         <div class="filter-group">
           <div class="filter-label">To</div>
-          <button class="dropdown-toggle" id="dateToBtn" type="button">Any</button>
-          <div class="dropdown-menu cal-menu" id="dateToMenu">
-            <div class="cal-header">
-              <select class="cal-month-select" id="dateToMonth"></select>
-              <select class="cal-year-select" id="dateToYear"></select>
-            </div>
-            <div class="cal-dow-row">
-              <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-            </div>
-            <div class="cal-grid" id="dateToGrid"></div>
-            <button class="cal-clear" data-target="dateTo" type="button">Clear</button>
+          <div class="date-select-box">
+            <select id="dateToYear"></select>
+            <span class="sep">/</span>
+            <select id="dateToMonth"></select>
+            <span class="sep">/</span>
+            <select id="dateToDay"></select>
           </div>
         </div>
       </div>
@@ -781,20 +749,16 @@ let filters = {
   dateTo: null,
   year: new Date().getFullYear() >= 2026 && new Date().getFullYear() <= 2032 ? new Date().getFullYear() : 2026
 };
-const CAL_MIN = "2026-06-01";
-const CAL_MAX = "2032-12-31";
-let calView = { dateFrom: null, dateTo: null }; // { year, month(0-11) } currently shown per calendar
+
+function todayStr(){
+  const n = new Date();
+  return n.getFullYear() + '-' + String(n.getMonth()+1).padStart(2,'0') + '-' + String(n.getDate()).padStart(2,'0');
+}
 
 function renderSocialBar(){
   document.getElementById('socialBar').innerHTML = SOCIAL_LINKS.map(s => `
     <a class="social-link${s.placeholder ? ' placeholder' : ''}" href="${s.url}" data-tip="${s.label}" target="_blank" rel="noopener">${s.icon}</a>
   `).join('');
-}
-
-function formatDateLabel(dateStr){
-  if(!dateStr) return "Any";
-  const [y, m, d] = dateStr.split('-').map(Number);
-  return MONTHS[m-1] + ' ' + d + ', ' + y;
 }
 
 async function loadData(){
@@ -811,74 +775,62 @@ async function loadData(){
     return;
   }
   document.getElementById('lastUpdated').textContent = 'RECORDS: ' + ACTIVITY.length;
-  const now = new Date();
-  calView.dateFrom = { year: now.getFullYear(), month: now.getMonth() };
-  calView.dateTo = { year: now.getFullYear(), month: now.getMonth() };
-  if(ACTIVITY.length){
-    const earliest = ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted);
-    const latest = ACTIVITY.reduce((max, d) => d.date_posted > max ? d.date_posted : max, ACTIVITY[0].date_posted);
-    document.getElementById('trackingSince').textContent = earliest;
-    // Default the date range filters to the actual span of the data, oldest to latest.
-    filters.dateFrom = earliest;
-    filters.dateTo = latest;
-    const [ey, em] = earliest.split('-').map(Number);
-    const [ly, lm] = latest.split('-').map(Number);
-    calView.dateFrom = { year: ey, month: em - 1 };
-    calView.dateTo = { year: ly, month: lm - 1 };
-  }
+  const earliest = ACTIVITY.length
+    ? ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted)
+    : todayStr();
+  document.getElementById('trackingSince').textContent = ACTIVITY.length ? earliest : '·';
+  // From defaults to the oldest video in the data. To always defaults to today's real date.
+  filters.dateFrom = earliest;
+  filters.dateTo = todayStr();
   renderSocialBar();
   initFilters();
   renderAll();
 }
 
-function buildCalendarShell(prefix){
-  const monthSelect = document.getElementById(prefix + 'Month');
-  const yearSelect = document.getElementById(prefix + 'Year');
-  monthSelect.innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
-  yearSelect.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
-  monthSelect.addEventListener('change', () => {
-    calView[prefix].month = parseInt(monthSelect.value);
-    renderCalendarGrid(prefix);
-  });
-  yearSelect.addEventListener('change', () => {
-    calView[prefix].year = parseInt(yearSelect.value);
-    renderCalendarGrid(prefix);
-  });
-}
+// Builds a Year / Month / Day dropdown trio for the given filter key ("dateFrom" or "dateTo").
+// Keeps the day options in sync with however many days the selected month actually has.
+function buildDateSelectGroup(prefix){
+  const yearSel = document.getElementById(prefix + 'Year');
+  const monthSel = document.getElementById(prefix + 'Month');
+  const daySel = document.getElementById(prefix + 'Day');
 
-function renderCalendarGrid(prefix){
-  const view = calView[prefix];
-  document.getElementById(prefix + 'Month').value = view.month;
-  document.getElementById(prefix + 'Year').value = view.year;
+  yearSel.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
+  monthSel.innerHTML = MONTHS.map((m, i) => `<option value="${i}">${m}</option>`).join('');
 
-  const firstOfMonth = new Date(view.year, view.month, 1);
-  const startOffset = firstOfMonth.getDay(); // 0=Sun
-  const daysInMonth = new Date(view.year, view.month + 1, 0).getDate();
-  const todayStr = new Date().toISOString().slice(0,10);
-  const selectedStr = filters[prefix];
-
-  let cells = '';
-  for(let i = 0; i < startOffset; i++){ cells += '<div class="cal-day empty"></div>'; }
-  for(let d = 1; d <= daysInMonth; d++){
-    const dateStr = view.year + '-' + String(view.month+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-    const disabled = dateStr < CAL_MIN || dateStr > CAL_MAX;
-    const classes = ['cal-day'];
-    if(disabled) classes.push('disabled');
-    if(dateStr === selectedStr) classes.push('selected');
-    if(dateStr === todayStr) classes.push('today');
-    cells += `<div class="${classes.join(' ')}" data-date="${dateStr}">${d}</div>`;
+  function refreshDayOptions(keepDay){
+    const y = parseInt(yearSel.value);
+    const m = parseInt(monthSel.value);
+    const daysInMonth = new Date(y, m + 1, 0).getDate();
+    const wanted = Math.min(keepDay || 1, daysInMonth);
+    daySel.innerHTML = Array.from({length: daysInMonth}, (_, i) => i + 1)
+      .map(d => `<option value="${d}">${String(d).padStart(2,'0')}</option>`).join('');
+    daySel.value = wanted;
   }
-  document.getElementById(prefix + 'Grid').innerHTML = cells;
-  document.getElementById(prefix + 'Grid').querySelectorAll('.cal-day:not(.disabled):not(.empty)').forEach(cell => {
-    cell.addEventListener('click', () => {
-      filters[prefix] = cell.dataset.date;
-      document.getElementById(prefix + 'Btn').textContent = formatDateLabel(cell.dataset.date);
-      document.getElementById(prefix + 'Menu').classList.remove('open');
-      renderCalendarGrid(prefix);
-      renderTable(); renderStats();
-    });
-  });
+
+  function commit(){
+    const y = yearSel.value;
+    const m = String(parseInt(monthSel.value) + 1).padStart(2, '0');
+    const d = String(daySel.value).padStart(2, '0');
+    filters[prefix] = `${y}-${m}-${d}`;
+    renderTable(); renderStats();
+  }
+
+  yearSel.addEventListener('change', () => { refreshDayOptions(parseInt(daySel.value)); commit(); });
+  monthSel.addEventListener('change', () => { refreshDayOptions(parseInt(daySel.value)); commit(); });
+  daySel.addEventListener('change', commit);
+
+  return {
+    setDate(dateStr){
+      const [y, m, d] = dateStr.split('-').map(Number);
+      yearSel.value = y;
+      monthSel.value = m - 1;
+      refreshDayOptions(d);
+      filters[prefix] = dateStr;
+    }
+  };
 }
+
+let dateFromGroup, dateToGroup;
 
 function initFilters(){
   // year select (chart)
@@ -943,37 +895,11 @@ function initFilters(){
     });
   });
 
-  // date range calendars
-  buildCalendarShell('dateFrom');
-  buildCalendarShell('dateTo');
-  renderCalendarGrid('dateFrom');
-  renderCalendarGrid('dateTo');
-  document.getElementById('dateFromBtn').textContent = formatDateLabel(filters.dateFrom);
-  document.getElementById('dateToBtn').textContent = formatDateLabel(filters.dateTo);
-  const dateFromMenu = document.getElementById('dateFromMenu');
-  const dateToMenu = document.getElementById('dateToMenu');
-  document.getElementById('dateFromBtn').addEventListener('click', e => {
-    e.stopPropagation();
-    closeAllMenus(dateFromMenu);
-    dateFromMenu.classList.toggle('open');
-  });
-  document.getElementById('dateToBtn').addEventListener('click', e => {
-    e.stopPropagation();
-    closeAllMenus(dateToMenu);
-    dateToMenu.classList.toggle('open');
-  });
-  dateFromMenu.addEventListener('click', e => e.stopPropagation());
-  dateToMenu.addEventListener('click', e => e.stopPropagation());
-  document.querySelectorAll('.cal-clear').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const prefix = btn.dataset.target;
-      filters[prefix] = null;
-      document.getElementById(prefix + 'Btn').textContent = "Any";
-      document.getElementById(prefix + 'Menu').classList.remove('open');
-      renderCalendarGrid(prefix);
-      renderTable(); renderStats();
-    });
-  });
+  // date range: Year / Month / Day dropdown trios, always visible, no popup
+  dateFromGroup = buildDateSelectGroup('dateFrom');
+  dateToGroup = buildDateSelectGroup('dateTo');
+  dateFromGroup.setDate(filters.dateFrom);
+  dateToGroup.setDate(filters.dateTo);
 
   // close any open dropdown when clicking elsewhere
   document.addEventListener('click', () => closeAllMenus(null));
@@ -983,26 +909,17 @@ function initFilters(){
     filters.categories.clear();
     filters.type = "all";
     filters.platforms.clear();
-    if(ACTIVITY.length){
-      const earliest = ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted);
-      const latest = ACTIVITY.reduce((max, d) => d.date_posted > max ? d.date_posted : max, ACTIVITY[0].date_posted);
-      filters.dateFrom = earliest;
-      filters.dateTo = latest;
-      const [ey, em] = earliest.split('-').map(Number);
-      const [ly, lm] = latest.split('-').map(Number);
-      calView.dateFrom = { year: ey, month: em - 1 };
-      calView.dateTo = { year: ly, month: lm - 1 };
-    }
+    const earliest = ACTIVITY.length
+      ? ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted)
+      : todayStr();
+    dateFromGroup.setDate(earliest);
+    dateToGroup.setDate(todayStr());
     catMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     platMenu.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
     updateCategoryLabel();
     updatePlatformLabel();
     document.querySelectorAll('.type-btn').forEach(b2 => b2.classList.remove('active'));
     document.querySelector('.type-btn[data-type="all"]').classList.add('active');
-    document.getElementById('dateFromBtn').textContent = formatDateLabel(filters.dateFrom);
-    document.getElementById('dateToBtn').textContent = formatDateLabel(filters.dateTo);
-    renderCalendarGrid('dateFrom');
-    renderCalendarGrid('dateTo');
     renderTable(); renderStats();
   });
 }
