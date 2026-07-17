@@ -94,6 +94,31 @@
   .social-link:active{ transform: translateY(0) scale(0.94); }
   .social-link.placeholder{ opacity: .3; cursor: default; pointer-events: none; }
   .social-link svg{ width: 20px; height: 20px; display:block; }
+
+  /* ---------- Fast top-positioned tooltips ---------- */
+  [data-tip]{ position: relative; }
+  [data-tip]::after{
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--panel-raised);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    padding: 4px 8px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .04s linear;
+    z-index: 60;
+  }
+  [data-tip]:hover::after{ opacity: 1; visibility: visible; }
+
   .topbar-meta{
     font-family: var(--font-mono);
     font-size: 12px;
@@ -312,6 +337,13 @@
     padding: 7px 10px;
     border-radius: 3px;
     min-width: 150px;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  select:hover, input[type="date"]:hover,
+  select:focus, input[type="date"]:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
+    outline: none;
   }
 
   .dropdown-toggle{
@@ -325,8 +357,13 @@
     min-width: 170px;
     text-align:left;
     cursor:pointer;
+    transition: border-color .15s ease, box-shadow .15s ease;
   }
-  .dropdown-toggle:hover{ border-color: var(--accent-dim); }
+  .dropdown-toggle:hover, .dropdown-toggle:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
+    outline: none;
+  }
   .dropdown-menu{
     display:none;
     position:absolute;
@@ -643,7 +680,7 @@ let filters = {
 
 function renderSocialBar(){
   document.getElementById('socialBar').innerHTML = SOCIAL_LINKS.map(s => `
-    <a class="social-link${s.placeholder ? ' placeholder' : ''}" href="${s.url}" title="${s.label}" target="_blank" rel="noopener">${s.icon}</a>
+    <a class="social-link${s.placeholder ? ' placeholder' : ''}" href="${s.url}" data-tip="${s.label}" target="_blank" rel="noopener">${s.icon}</a>
   `).join('');
 }
 
@@ -874,7 +911,7 @@ function renderTable(){
       if(posted) cls += ' posted';
       if(url) cls += ' linked';
       const inner = url ? `<a href="${url}" target="_blank" rel="noopener"></a>${p.letter}` : p.letter;
-      return `<span class="${cls}" title="${p.label}: ${posted ? 'posted' : 'not posted'}">${inner}</span>`;
+      return `<span class="${cls}" data-tip="${p.label}: ${posted ? 'posted' : 'not posted'}">${inner}</span>`;
     }).join('');
 
     return `
