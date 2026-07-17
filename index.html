@@ -334,33 +334,6 @@
     text-transform: uppercase;
     color: var(--text-faint);
   }
-  select, input[type="date"]{
-    background: var(--panel-raised);
-    border: 1px solid var(--line);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 12.5px;
-    padding: 7px 10px;
-    border-radius: 3px;
-    min-width: 150px;
-    transition: border-color .15s ease, box-shadow .15s ease;
-  }
-  select:hover, input[type="date"]:hover,
-  select:focus, input[type="date"]:focus{
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
-    outline: none;
-  }
-  input[type="date"]{
-    cursor: pointer;
-  }
-  input[type="date"]::-webkit-calendar-picker-indicator{
-    cursor: pointer;
-    opacity: 0.85;
-    filter: invert(48%) sepia(79%) saturate(2000%) hue-rotate(199deg) brightness(103%) contrast(101%);
-  }
-  input[type="date"]::-webkit-calendar-picker-indicator:hover{ opacity: 1; }
-
   .dropdown-toggle{
     background: var(--panel-raised);
     border: 1px solid var(--line);
