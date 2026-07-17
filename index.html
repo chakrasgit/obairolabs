@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Obairo — Activity Console</title>
+<title>Obairo · Activity Console</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -454,8 +454,8 @@
       <div class="social-bar" id="socialBar"></div>
     </div>
     <div class="topbar-meta">
-      TRACKING SINCE <strong id="trackingSince">—</strong><br>
-      <span id="lastUpdated">—</span>
+      TRACKING SINCE <strong id="trackingSince">·</strong><br>
+      <span id="lastUpdated">·</span>
     </div>
   </div>
 
@@ -623,7 +623,7 @@ async function loadData(){
     CATEGORIES = await categoriesRes.json();
   }catch(e){
     document.getElementById('tableBody').innerHTML =
-      '<tr><td colspan="6" style="padding:20px;font-family:var(--font-mono);color:var(--text-faint);">Could not load data/activity.json — if you opened this file directly, run a local server (e.g. `python -m http.server`) instead of double-clicking index.html.</td></tr>';
+      '<tr><td colspan="6" style="padding:20px;font-family:var(--font-mono);color:var(--text-faint);">Could not load data/activity.json. If you opened this file directly, run a local server (e.g. `python -m http.server`) instead of double-clicking index.html.</td></tr>';
     return;
   }
   document.getElementById('lastUpdated').textContent = 'RECORDS: ' + ACTIVITY.length;
@@ -810,7 +810,7 @@ function renderTable(){
       const url = typeof info === 'string' ? info : null;
       const cls = posted ? 'platform-badge posted' : 'platform-badge';
       const inner = url ? `<a href="${url}" target="_blank" rel="noopener"></a>${p.letter}` : p.letter;
-      return `<span class="${cls}" title="${p.label}${posted ? ' — posted' : ' — not posted'}">${inner}</span>`;
+      return `<span class="${cls}" title="${p.label}: ${posted ? 'posted' : 'not posted'}">${inner}</span>`;
     }).join('');
 
     return `
