@@ -187,14 +187,20 @@
   .panel-body{ padding: 18px; }
 
   /* ---------- Chart ---------- */
-  .year-select{
-    background: var(--panel-raised);
-    border: 1px solid var(--line);
-    color: var(--text);
+  .year-dropdown-wrap{ position: relative; }
+  .dropdown-item-single{
     font-family: var(--font-mono);
     font-size: 12px;
-    padding: 5px 10px;
+    color: var(--text-dim);
+    padding: 7px 10px;
+    cursor: pointer;
     border-radius: 3px;
+  }
+  .dropdown-item-single:hover{ background: var(--line-soft); color: var(--text); }
+  .dropdown-item-single.selected{
+    background: var(--accent);
+    color: #06101f;
+    font-weight: 600;
   }
   .chart-row{
     display:flex;
@@ -644,7 +650,10 @@
   <div class="panel">
     <div class="panel-head">
       <div class="panel-title">Posts / Month</div>
-      <select class="year-select" id="yearSelect"></select>
+      <div class="year-dropdown-wrap">
+        <button class="dropdown-toggle" id="yearFilterBtn" type="button"></button>
+        <div class="dropdown-menu" id="yearFilterMenu"></div>
+      </div>
     </div>
     <div class="panel-body">
       <div class="chart-row" id="chartRow"></div>
@@ -928,11 +937,31 @@ function buildDateSelectGroup(prefix){
 let dateFromGroup, dateToGroup;
 
 function initFilters(){
-  // year select (chart)
-  const yearSelect = document.getElementById('yearSelect');
-  yearSelect.innerHTML = YEARS.map(y => `<option value="${y}">${y}</option>`).join('');
-  yearSelect.value = filters.year;
-  yearSelect.addEventListener('change', () => { filters.year = parseInt(yearSelect.value); renderChart(); });
+  // year filter (chart) - themed single-select dropdown, matching Category/Platform look
+  const yearFilterBtn = document.getElementById('yearFilterBtn');
+  const yearFilterMenu = document.getElementById('yearFilterMenu');
+  function renderYearFilterMenu(){
+    yearFilterMenu.innerHTML = YEARS.map(y => `
+      <div class="dropdown-item-single${y === filters.year ? ' selected' : ''}" data-y="${y}">${y}</div>
+    `).join('');
+  }
+  renderYearFilterMenu();
+  yearFilterBtn.textContent = filters.year;
+  yearFilterMenu.addEventListener('click', (e) => {
+    const item = e.target.closest('.dropdown-item-single');
+    if(!item) return;
+    filters.year = parseInt(item.dataset.y);
+    yearFilterBtn.textContent = filters.year;
+    renderYearFilterMenu();
+    yearFilterMenu.classList.remove('open');
+    renderChart();
+  });
+  yearFilterBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeAllMenus(yearFilterMenu);
+    yearFilterMenu.classList.toggle('open');
+  });
+  yearFilterMenu.addEventListener('click', (e) => e.stopPropagation());
 
   // category dropdown (multi-select)
   const catMenu = document.getElementById('categoryMenu');
