@@ -83,14 +83,16 @@
   .social-bar{ display:flex; gap: 8px; flex-wrap: wrap; }
   .social-link{
     width: 30px; height: 30px;
-    border-radius: 50%;
+    border-radius: 8px;
     display:flex; align-items:center; justify-content:center;
     border: 1px solid var(--line);
+    background: rgba(79,141,255,0.06);
     color: var(--text-dim);
     transition: all .15s ease;
   }
-  .social-link:hover{ border-color: var(--accent); color: var(--accent-soft); background: rgba(79,141,255,0.1); }
-  .social-link.placeholder{ opacity: .4; cursor: default; }
+  .social-link:hover{ border-color: var(--accent); color: var(--accent-soft); background: rgba(79,141,255,0.18); transform: translateY(-1px); }
+  .social-link:active{ transform: translateY(0); }
+  .social-link.placeholder{ opacity: .4; cursor: default; pointer-events: none; }
   .social-link svg{ width: 15px; height: 15px; }
   .topbar-meta{
     font-family: var(--font-mono);
@@ -100,15 +102,21 @@
   }
   .topbar-meta strong{ color: var(--text-dim); }
 
-  /* ---------- Hero stat ---------- */
-  .stat-hero{
-    display:inline-flex;
+  /* ---------- KPI row ---------- */
+  .stats-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+  }
+  .stat-cell{
+    background: var(--panel);
+    padding: 18px 22px;
+    display:flex;
     flex-direction:column;
     gap: 6px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    padding: 18px 28px;
-    margin-bottom: 24px;
   }
   .stat-label{
     font-family: var(--font-mono);
@@ -119,9 +127,14 @@
   }
   .stat-value{
     font-family: var(--font-display);
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--accent-soft);
+  }
+  .stat-sub{
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-dim);
   }
 
   /* ---------- Panels ---------- */
@@ -426,6 +439,15 @@
     border-color: var(--accent);
     color: #06101f;
   }
+  .platform-badge.linked{
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .platform-badge.linked:hover{
+    transform: scale(1.18);
+    box-shadow: 0 0 0 3px rgba(79,141,255,0.28);
+  }
+  .platform-badge.linked:active{ transform: scale(0.92); }
   .platform-badge a{ position:absolute; inset:0; border-radius:50%; }
 
   .empty-state{
@@ -459,10 +481,22 @@
     </div>
   </div>
 
-  <!-- HERO STAT -->
-  <div class="stat-hero">
-    <div class="stat-label">Total Videos</div>
-    <div class="stat-value" id="totalVideos">0</div>
+  <!-- KPIs -->
+  <div class="stats-grid">
+    <div class="stat-cell">
+      <div class="stat-label">Total Videos</div>
+      <div class="stat-value" id="totalVideos">0</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Last Posted</div>
+      <div class="stat-value" id="lastPostedValue">·</div>
+      <div class="stat-sub" id="lastPostedSub">·</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-label">Avg Videos / Day</div>
+      <div class="stat-value" id="avgPerDayValue">·</div>
+      <div class="stat-sub" id="avgPerDaySub">·</div>
+    </div>
   </div>
 
   <!-- CHART -->
@@ -734,6 +768,34 @@ function renderAll(){
 function renderStats(){
   const total = getFiltered().length;
   document.getElementById('totalVideos').textContent = total;
+
+  if(!ACTIVITY.length) return;
+
+  const MS_DAY = 86400000;
+  const today = new Date();
+  const todayMid = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  // Last Posted
+  const lastDateStr = ACTIVITY.reduce((max, d) => d.date_posted > max ? d.date_posted : max, ACTIVITY[0].date_posted);
+  const [ly, lm, ld] = lastDateStr.split('-').map(Number);
+  const lastDateObj = new Date(ly, lm-1, ld);
+  const daysSinceLast = Math.round((todayMid - lastDateObj) / MS_DAY);
+  const lastLabel = MONTHS[lm-1] + ' ' + ld;
+  let sinceText;
+  if(daysSinceLast <= 0) sinceText = 'Today';
+  else if(daysSinceLast === 1) sinceText = '1 day ago';
+  else sinceText = daysSinceLast + ' days ago';
+  document.getElementById('lastPostedValue').textContent = lastLabel;
+  document.getElementById('lastPostedSub').textContent = sinceText;
+
+  // Avg Videos / Day (since first post)
+  const firstDateStr = ACTIVITY.reduce((min, d) => d.date_posted < min ? d.date_posted : min, ACTIVITY[0].date_posted);
+  const [fy, fm, fd] = firstDateStr.split('-').map(Number);
+  const firstDateObj = new Date(fy, fm-1, fd);
+  const daysSinceStart = Math.max(1, Math.round((todayMid - firstDateObj) / MS_DAY) + 1);
+  const avg = (ACTIVITY.length / daysSinceStart).toFixed(2);
+  document.getElementById('avgPerDayValue').textContent = avg;
+  document.getElementById('avgPerDaySub').textContent = 'since ' + MONTHS[fm-1] + ' ' + fd + ', ' + daysSinceStart + ' days';
 }
 
 function renderChart(){
@@ -808,7 +870,9 @@ function renderTable(){
       const info = item.platforms[p.key];
       const posted = !!info;
       const url = typeof info === 'string' ? info : null;
-      const cls = posted ? 'platform-badge posted' : 'platform-badge';
+      let cls = 'platform-badge';
+      if(posted) cls += ' posted';
+      if(url) cls += ' linked';
       const inner = url ? `<a href="${url}" target="_blank" rel="noopener"></a>${p.letter}` : p.letter;
       return `<span class="${cls}" title="${p.label}: ${posted ? 'posted' : 'not posted'}">${inner}</span>`;
     }).join('');
