@@ -1,8 +1,8 @@
-# Obairo Labs — Activity Console  
+# Obairo — Activity Console
 
 🔗 **Live Site:** [chakrasgit.github.io/obairolabs](https://chakrasgit.github.io/obairolabs/)
 
-A self-hosted, no-backend dashboard + tracker for obairolabs content activity across YouTube, Instagram, Facebook, Threads, X, LinkedIn and Reddit. 
+A self-hosted, no-backend dashboard + tracker for Obairo content activity across YouTube, Instagram, Facebook, Threads, X, Reddit and LinkedIn.
 
 ## Files
 
@@ -14,35 +14,38 @@ data/categories.json  → your list of sub-niches — add/remove freely
 
 ## Updating daily
 
-Open `data/activity.json` and add a new entry to the array. Copy this block, fill it in, keep the `id` incrementing:
+This tracker only logs **posted** content — there's no scheduled/pending state. Add an entry once a video is actually live somewhere.
+
+Open `data/activity.json` and add a new entry to the array. Copy this block, fill it in, and keep `id` incrementing in chronological order (oldest video = lowest id, newest = highest):
 
 ```json
 {
-  "id": 9,
+  "id": 8,
   "title": "Your video title here",
   "category": "AI News",
   "video_type": "short",
-  "date_posted": "2026-07-04",
+  "date_posted": "2026-07-20",
   "source_url": "https://official-source-link.com",
   "platforms": {
-    "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=..." },
-    "instagram": { "status": "posted", "url": "https://instagram.com/p/..." },
-    "facebook":  { "status": "posted", "url": "https://facebook.com/..." },
-    "threads":   { "status": "posted", "url": "https://threads.net/..." },
-    "twitter":   { "status": "scheduled", "url": null },
-    "reddit":    { "status": "not_planned", "url": null }
+    "youtube":   "https://youtube.com/watch?v=...",
+    "instagram": true,
+    "facebook":  false,
+    "threads":   true,
+    "x":         true,
+    "reddit":    false,
+    "linkedin":  true
   }
 }
 ```
 
-**Status values per platform:**
-- `"posted"` — live, dot fills solid amber, links to the `url` you give
-- `"scheduled"` — queued but not live yet, dot shows amber outline
-- `"not_planned"` — not going up on that platform for this piece, dot stays dim/empty
+**Platform values:**
+- A **URL string** — posted, and the badge in the table links out to it
+- **`true`** — posted, but you haven't saved a direct link yet (badge still fills, just isn't clickable)
+- **`false`** — not posted to that platform
 
-**video_type:** `"short"` or `"long"` 
+**video_type:** `"short"` or `"long"`
 
-**source_url:** optional — leave as `""` if there's no single primary source (e.g. an explainer video). Used to make the title clickable in the table.
+**source_url:** optional — leave as `""` if there's no single primary source. Used to make the title clickable in the table.
 
 ## Adding a new sub-niche/category
 
@@ -51,26 +54,22 @@ Just add a string to `data/categories.json`:
 ```json
 [
   "AI News",
-  "AI Labs",
   "AI Concepts",
-  "AI Ethics & Safety",
-  "Robotics News",
   "Robotic Concepts",
-  "Humanoid Robots",
-  "AI in Industry",
+  "Robotics News",
+  "AI Startups",
+  "Robotics Startups",
   "Your New Category Here"
 ]
 ```
 
-It will automatically show up as a filter chip and in the category breakdown — no HTML/JS edits needed. Just make sure any activity entries use the *exact same spelling* as what's in this file.
-
-
+It will automatically show up in the category filter dropdown and in the category breakdown — no HTML/JS edits needed. Just make sure any activity entries use the *exact same spelling* as what's in this file.
 
 ## What the dashboard shows
 
-- **Stats row** — total videos, active categories, platform coverage %, this month's count
+- **Total Videos** — the one KPI that matters for this tracker
 - **Posts / Month chart** — pick any year from 2026–2032, see your monthly volume
 - **Category breakdown** — which sub-niches you're covering most
-- **Platform coverage** — per-platform posted vs. planned ratio, flags if you're consistently skipping one
-- **Filters** — category (multi-select), video type, platform, date range — all combinable
-- **Activity log table** — full sortable-by-date record with clickable platform dots and source links
+- **Videos per platform** — raw count of videos posted per platform
+- **Filters** — category (multi-select dropdown), video type, platform, date range — all combinable
+- **Activity log table** — sortable-by-date record, newest first, with per-platform letter badges (filled = posted, outline = not posted) and clickable links where available
