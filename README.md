@@ -1,20 +1,18 @@
-# Obairo — Activity Console
+# Obairo Activity Console
 
-🔗 **Live Site:** [chakrasgit.github.io/obairolabs](https://chakrasgit.github.io/obairolabs/)
+Live Site: [chakrasgit.github.io/obairolabs](https://chakrasgit.github.io/obairolabs/)
 
-A self-hosted, no-backend dashboard + tracker for Obairo content activity across YouTube, Instagram, Facebook, Threads, X, Reddit and LinkedIn.
+A self-hosted, no-backend dashboard for tracking Obairo content activity across YouTube, Instagram, Facebook, Threads, X, Reddit and LinkedIn.
 
 ## Files
 
 ```
-index.html            → the whole dashboard (HTML + CSS + JS, no build step)
-data/activity.json    → your daily log — one entry per video
-data/categories.json  → your list of sub-niches — add/remove freely
+index.html            the whole dashboard (HTML + CSS + JS, no build step)
+data/activity.json    daily log, one entry per video
+data/categories.json  list of sub-niches, add/remove freely
 ```
 
 ## Updating daily
-
-This tracker only logs **posted** content — there's no scheduled/pending state. Add an entry once a video is actually live somewhere.
 
 Open `data/activity.json` and add a new entry to the array. Copy this block, fill it in, and keep `id` incrementing in chronological order (oldest video = lowest id, newest = highest):
 
@@ -39,17 +37,17 @@ Open `data/activity.json` and add a new entry to the array. Copy this block, fil
 ```
 
 **Platform values:**
-- A **URL string** — posted, and the badge in the table links out to it
-- **`true`** — posted, but you haven't saved a direct link yet (badge still fills, just isn't clickable)
-- **`false`** — not posted to that platform
+- A URL string: posted, badge links out to it
+- `true`: posted, no link saved yet (badge still fills, just isn't clickable)
+- `false`: not posted to that platform
 
 **video_type:** `"short"` or `"long"`
 
-**source_url:** optional — leave as `""` if there's no single primary source. Used to make the title clickable in the table.
+**source_url:** optional, leave as `""` if there's no single primary source. Used to make the title clickable in the table.
 
 ## Adding a new sub-niche/category
 
-Just add a string to `data/categories.json`:
+Add a string to `data/categories.json`:
 
 ```json
 [
@@ -63,13 +61,13 @@ Just add a string to `data/categories.json`:
 ]
 ```
 
-It will automatically show up in the category filter dropdown and in the category breakdown — no HTML/JS edits needed. Just make sure any activity entries use the *exact same spelling* as what's in this file.
+It shows up automatically in the category filter and category breakdown. No HTML/JS edits needed. Use the exact same spelling in activity entries as in this file.
 
 ## What the dashboard shows
 
-- **Total Videos** — the one KPI that matters for this tracker
-- **Posts / Month chart** — pick any year from 2026–2032, see your monthly volume
-- **Category breakdown** — which sub-niches you're covering most
-- **Videos per platform** — raw count of videos posted per platform
-- **Filters** — category (multi-select dropdown), video type, platform, date range — all combinable
-- **Activity log table** — sortable-by-date record, newest first, with per-platform letter badges (filled = posted, outline = not posted) and clickable links where available
+- Total Videos: the one KPI tracked
+- Posts / Month chart: pick any year from 2026 to 2032
+- Category breakdown: which sub-niches get covered most
+- Videos per platform: raw count posted per platform
+- Filters: category (multi-select dropdown), video type, platform, date range, all combinable
+- Activity log table: sorted newest first, per-platform letter badges (filled = posted, outline = not posted), clickable links where available
