@@ -429,12 +429,12 @@
   .date-picker-row{
     display:flex;
     align-items:center;
-    gap: 4px;
+    gap: 6px;
   }
   .date-picker-row .sep{
     color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 12px;
   }
   .mini-dropdown{ position: relative; }
   .mini-dropdown-toggle{
@@ -442,10 +442,10 @@
     border: 1px solid var(--line);
     color: var(--text);
     font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 6px 8px;
+    font-size: 12.5px;
+    padding: 7px 14px;
     border-radius: 3px;
-    min-width: 50px;
+    min-width: 64px;
     text-align: center;
     cursor: pointer;
     transition: border-color .15s ease, box-shadow .15s ease;
@@ -458,27 +458,28 @@
   .mini-dropdown-menu{
     display:none;
     position: absolute;
-    top: calc(100% + 4px);
+    top: calc(100% + 6px);
     left: 0;
     z-index: 30;
     background: var(--panel-raised);
     border: 1px solid var(--line);
-    border-radius: 3px;
-    padding: 5px;
+    border-radius: 4px;
+    padding: 10px;
     grid-template-columns: repeat(3, 1fr);
-    gap: 3px;
+    gap: 7px;
     width: max-content;
   }
+  .mini-dropdown-menu.day-menu{ grid-template-columns: repeat(5, 1fr); }
   .mini-dropdown-menu.open{ display:grid; }
   .mini-cell-btn{
     font-family: var(--font-mono);
-    font-size: 10.5px;
+    font-size: 12px;
     color: var(--text-dim);
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: 3px;
-    padding: 4px 3px;
-    min-width: 28px;
+    padding: 8px 6px;
+    min-width: 36px;
     text-align: center;
     cursor: pointer;
     transition: border-color .12s ease, background .12s ease, color .12s ease;
@@ -537,6 +538,9 @@
     vertical-align: middle;
   }
   tbody tr:hover{ background: var(--panel-raised); }
+  #tableBody{ transition: opacity .18s ease; }
+  #tableBody.table-fade{ opacity: 0; }
+  .empty-state{ transition: opacity .18s ease; }
   .serial{ font-family: var(--font-mono); color: var(--accent-soft); font-size: 12px; }
   .title-cell{ max-width: 320px; }
   .title-cell a{ color: var(--text); text-decoration:none; }
@@ -703,7 +707,7 @@
             <span class="sep">/</span>
             <div class="mini-dropdown">
               <button class="mini-dropdown-toggle" id="dateFromDayBtn" type="button"></button>
-              <div class="mini-dropdown-menu" id="dateFromDayMenu"></div>
+              <div class="mini-dropdown-menu day-menu" id="dateFromDayMenu"></div>
             </div>
           </div>
         </div>
@@ -722,7 +726,7 @@
             <span class="sep">/</span>
             <div class="mini-dropdown">
               <button class="mini-dropdown-toggle" id="dateToDayBtn" type="button"></button>
-              <div class="mini-dropdown-menu" id="dateToDayMenu"></div>
+              <div class="mini-dropdown-menu day-menu" id="dateToDayMenu"></div>
             </div>
           </div>
         </div>
@@ -1144,9 +1148,19 @@ function renderTable(){
   const emptyState = document.getElementById('emptyState');
   document.getElementById('rowCount').textContent = data.length + " record" + (data.length === 1 ? "" : "s");
 
+  // Fade the table out briefly before swapping rows in, then fade back in.
+  // Keeps filter changes (especially date range, which can shrink the result
+  // set a lot) feeling like a smooth transition instead of a sudden collapse.
+  tbody.classList.add('table-fade');
+  emptyState.style.opacity = '0';
+
   if(data.length === 0){
     tbody.innerHTML = "";
     emptyState.style.display = "block";
+    requestAnimationFrame(() => {
+      tbody.classList.remove('table-fade');
+      emptyState.style.opacity = '1';
+    });
     return;
   }
   emptyState.style.display = "none";
@@ -1178,6 +1192,8 @@ function renderTable(){
       </tr>
     `;
   }).join('');
+
+  requestAnimationFrame(() => tbody.classList.remove('table-fade'));
 }
 
 loadData();
