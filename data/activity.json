@@ -1,130 +1,121 @@
 [
   {
     "id": 1,
-    "title": "Grok 4.5 Private Beta Leaks: What SpaceX and Tesla Are Testing",
-    "category": "AI Labs",
+    "title": "OpenAI Just Spent $150M to Help Companies Actually Use AI",
+    "category": "AI News",
     "video_type": "short",
-    "date_posted": "2026-07-01",
-    "source_url": "https://x.ai/blog/grok-4-5",
+    "date_posted": "2026-06-16",
+    "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example1" },
-      "instagram": { "status": "posted", "url": "https://instagram.com/p/example1" },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example1" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example1" },
-      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example1" },
-      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example1" }
+      "youtube":   "https://www.youtube.com/watch?v=r37YneMcpmU",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   },
   {
     "id": 2,
-    "title": "What Is a Transformer, Actually? (No Jargon Explainer)",
-    "category": "AI Concepts",
+    "title": "SpaceX Just Bought the Coding Tool Every Developer Uses for 60 Billion Dollars",
+    "category": "AI News",
     "video_type": "short",
-    "date_posted": "2026-06-28",
+    "date_posted": "2026-06-17",
     "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example2" },
-      "instagram": { "status": "posted", "url": "https://instagram.com/p/example2" },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example2" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example2" },
-      "twitter":   { "status": "scheduled", "url": null },
-      "reddit":    { "status": "not_planned", "url": null }
+      "youtube":   "https://www.youtube.com/watch?v=mInwriPNybs",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   },
   {
     "id": 3,
-    "title": "Figure's New Humanoid Just Learned to Fold Laundry",
-    "category": "Humanoid Robots",
+    "title": "OpenAI's ChatGPT o3 Solved 18 Medical Mystery Cases | AI Breakthrough in Healthcare",
+    "category": "AI News",
     "video_type": "short",
-    "date_posted": "2026-06-25",
-    "source_url": "https://www.figure.ai/news",
+    "date_posted": "2026-06-26",
+    "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example3" },
-      "instagram": { "status": "posted", "url": "https://instagram.com/p/example3" },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example3" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example3" },
-      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example3" },
-      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example3" }
+      "youtube":   "https://www.youtube.com/watch?v=rTJcik634po",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   },
   {
     "id": 4,
-    "title": "Inside Anthropic's Constitutional AI: A Deep Dive",
-    "category": "AI Ethics & Safety",
-    "video_type": "long",
-    "date_posted": "2026-06-20",
-    "source_url": "https://www.anthropic.com/news",
+    "title": "Fable 5 Is Back. Export Controls Lifted",
+    "category": "AI News",
+    "video_type": "short",
+    "date_posted": "2026-07-01",
+    "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example4" },
-      "instagram": { "status": "not_planned", "url": null },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example4" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example4" },
-      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example4" },
-      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example4" }
+      "youtube":   "https://www.youtube.com/watch?v=ebV3PEg4n3I",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   },
   {
     "id": 5,
-    "title": "How Robotic Arms Actually 'See' What They're Picking Up",
-    "category": "Robotic Concepts",
+    "title": "Claude Science Is Here: Anthropic's Biggest Move Yet",
+    "category": "AI News",
     "video_type": "short",
-    "date_posted": "2026-06-15",
+    "date_posted": "2026-07-02",
     "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example5" },
-      "instagram": { "status": "posted", "url": "https://instagram.com/p/example5" },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example5" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example5" },
-      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example5" },
-      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example5" }
+      "youtube":   "https://www.youtube.com/watch?v=FI8Icl7BSik",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   },
   {
     "id": 6,
-    "title": "Boston Dynamics' Atlas Gets a Factory Job",
-    "category": "Robotics News",
+    "title": "Alibaba Bans Claude Code After Spy Fears | Anthropic vs Alibaba Explained",
+    "category": "AI News",
     "video_type": "short",
-    "date_posted": "2026-06-10",
-    "source_url": "https://bostondynamics.com/news",
+    "date_posted": "2026-07-05",
+    "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example6" },
-      "instagram": { "status": "posted", "url": "https://instagram.com/p/example6" },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example6" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example6" },
-      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example6" },
-      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example6" }
+      "youtube":   "https://www.youtube.com/watch?v=MAXpp8A9Ifg",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   },
   {
     "id": 7,
-    "title": "Why Every AI Lab Suddenly Cares About Robotics",
-    "category": "AI in Industry",
-    "video_type": "long",
-    "date_posted": "2026-06-05",
-    "source_url": "",
-    "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example7" },
-      "instagram": { "status": "not_planned", "url": null },
-      "facebook":  { "status": "posted", "url": "https://facebook.com/example7" },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example7" },
-      "twitter":   { "status": "posted", "url": "https://x.com/obirolabs/status/example7" },
-      "reddit":    { "status": "posted", "url": "https://reddit.com/r/obirolabs/comments/example7" }
-    }
-  },
-  {
-    "id": 8,
-    "title": "OpenAI's Latest Model Card, Explained in Plain English",
+    "title": "Sam Altman Offers the U.S. Government $42.6 Billion in OpenAI",
     "category": "AI News",
     "video_type": "short",
-    "date_posted": "2026-07-02",
-    "source_url": "https://openai.com/news",
+    "date_posted": "2026-07-05",
+    "source_url": "",
     "platforms": {
-      "youtube":   { "status": "posted", "url": "https://youtube.com/watch?v=example8" },
-      "instagram": { "status": "scheduled", "url": null },
-      "facebook":  { "status": "scheduled", "url": null },
-      "threads":   { "status": "posted", "url": "https://threads.net/@obirolabs/post/example8" },
-      "twitter":   { "status": "scheduled", "url": null },
-      "reddit":    { "status": "not_planned", "url": null }
+      "youtube":   "https://www.youtube.com/watch?v=_91xSsiusbU",
+      "instagram": true,
+      "facebook":  true,
+      "threads":   true,
+      "x":         true,
+      "reddit":    true,
+      "linkedin":  true
     }
   }
 ]
