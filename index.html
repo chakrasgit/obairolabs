@@ -345,6 +345,15 @@
     box-shadow: 0 0 0 3px rgba(79,141,255,0.18);
     outline: none;
   }
+  input[type="date"]{
+    cursor: pointer;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator{
+    cursor: pointer;
+    opacity: 0.85;
+    filter: invert(48%) sepia(79%) saturate(2000%) hue-rotate(199deg) brightness(103%) contrast(101%);
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover{ opacity: 1; }
 
   .dropdown-toggle{
     background: var(--panel-raised);
@@ -414,8 +423,10 @@
     padding: 7px 12px;
     cursor: pointer;
     border-radius: 3px;
+    transition: transform .12s ease, color .15s ease, border-color .15s ease, background .15s ease;
   }
   .reset-btn:hover{ color: var(--red); border-color: var(--red); }
+  .reset-btn:active{ transform: scale(0.94); background: rgba(255,107,107,0.12); }
 
   /* ---------- Table ---------- */
   table{ width:100%; border-collapse: collapse; }
@@ -756,6 +767,13 @@ function initFilters(){
   // date range
   document.getElementById('dateFrom').addEventListener('change', e => { filters.dateFrom = e.target.value || null; renderTable(); renderStats(); });
   document.getElementById('dateTo').addEventListener('change', e => { filters.dateTo = e.target.value || null; renderTable(); renderStats(); });
+  [document.getElementById('dateFrom'), document.getElementById('dateTo')].forEach(input => {
+    input.addEventListener('click', () => {
+      if(typeof input.showPicker === 'function'){
+        try{ input.showPicker(); }catch(e){}
+      }
+    });
+  });
 
   // reset
   document.getElementById('resetFilters').addEventListener('click', () => {
